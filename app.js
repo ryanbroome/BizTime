@@ -1,14 +1,16 @@
 /** BizTime express application. */
-const express = require("express");
 
+/** resource requirements for BizTime app */
+const express = require("express");
 const app = express();
 const ExpressError = require("./expressError");
-
 const companies = require("./routes/companies");
 const invoices = require("./routes/invoices");
 
+/**use json to parse */
 app.use(express.json());
 
+/**routes resources */
 app.use("/companies", companies);
 app.use("/invoices", invoices);
 

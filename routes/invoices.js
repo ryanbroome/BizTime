@@ -43,7 +43,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-// PUT / invoices / [id]
+// PUT / invoices / [id] - DONE
 router.patch("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -59,7 +59,7 @@ router.patch("/:id", async (req, res, next) => {
     return next(e);
   }
 });
-// DELETE / invoices / [id]
+// DELETE / invoices / [id] - DONE
 router.delete("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;

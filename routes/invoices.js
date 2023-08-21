@@ -3,7 +3,7 @@ const ExpressError = require("../expressError");
 const router = express.Router();
 const db = require("../db");
 
-// GET / all invoices
+// GET / all invoices - DONE
 router.get("/", async (req, res, next) => {
   try {
     const result = await db.query(`SELECT * FROM invoices`);
@@ -14,12 +14,15 @@ router.get("/", async (req, res, next) => {
 });
 
 // GET / invoices / [id] - DONE
-// TODO add error handler if no ID requested that does not exist
 router.get("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
     const result = await db.query(`SELECT * FROM invoices WHERE id=$1`, [id]);
-    return res.status(200).json(result.rows[0]);
+    if (result.rows.length == 0) {
+      throw new ExpressError(`Invoice ID # ${id} not found`, 404);
+    } else {
+      return res.status(200).json(result.rows[0]);
+    }
   } catch (e) {
     return next(e);
   }
@@ -40,20 +43,35 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-// TODO stopping point pickup on patch invoice by id
 // PUT / invoices / [id]
 router.patch("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { paid } = req.body;
-    const results = db.query(`UPDATE invoices SET() VALUES() WHERE id=$1`, [id]);
-    return res.status(200).json();
+    const { amt } = req.body;
+    const results = await db.query(`UPDATE invoices SET amt=$2 WHERE id=$1 RETURNING id, comp_code, amt, paid, add_date, paid_date`, [id, amt]);
+
+    if (results.rows.length === 0) {
+      throw new ExpressError("404 not found", 404);
+    } else {
+      return res.status(200).json({ invoice: results.rows });
+    }
   } catch (e) {
     return next(e);
   }
 });
 // DELETE / invoices / [id]
-
-// TODO update companies route - GET /companies/[code] if the company given cannot be found, this should return a 404 status response
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const results = await db.query(`DELETE FROM invoices WHERE id=$1;`, [id]);
+    if (results.rows.length === 0) {
+      throw new ExpressError("404 not found", 404);
+    } else {
+      return res.status(200).json();
+    }
+  } catch (e) {
+    return next(e);
+  }
+});
 
 module.exports = router;

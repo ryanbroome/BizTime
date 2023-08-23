@@ -48,3 +48,33 @@ describe("GET companies", () => {
     // expect(res.body).toEqual({ companies: [testCompany] });
   });
 });
+
+describe("POST /companies", () => {
+  test("create a single company", async () => {
+    const res = await request(app).post("/companies").send({ code: "comp", name: "company", description: "a company" });
+    expect(res.statusCode).toEqual(201);
+    expect(res.body).toEqual({ code: "comp", name: "company", description: "a company" });
+  });
+});
+
+describe("PATCH /companies/test", () => {
+  test("update a single company", async () => {
+    const res = await request(app).patch(`/companies/${testCompany.code}`).send({ name: "company", description: "a company that does more than test it also patches" });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      companies: { code: testCompany.code, name: "company", description: "a company that does more than test it also patches" },
+    });
+  });
+  test("update a single company", async () => {
+    const res = await request(app).patch(`/companies/0`).send({ name: "company", description: "a company that does more than test it also patches" });
+    expect(res.statusCode).toEqual(404);
+  });
+});
+
+describe("DELETES /companies/test", () => {
+  test("Delete a single company", async () => {
+    const res = await request(app).delete(`/companies/${testCompany.code}`);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({ status: "deleted" });
+  });
+});

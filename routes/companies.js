@@ -55,7 +55,7 @@ router.patch("/:code", async (req, res, next) => {
     if (results.rows.length === 0) {
       throw new ExpressError(`Can't update a company with code of ${code}`, 404);
     }
-    return res.send({ company: results.rows[0] });
+    return res.send({ companies: results.rows[0] });
   } catch (e) {
     return next(e);
   }

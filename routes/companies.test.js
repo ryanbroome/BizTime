@@ -42,4 +42,9 @@ describe("GET companies", () => {
     expect(res.statusCode).toBe(200);
     // expect(res.body).toEqual({ companies: [testCompany] });
   });
+  test("GET company INVALID :code", async function () {
+    const res = await request(app).get(`/companies/0`);
+    expect(res.statusCode).toBe(404);
+    // expect(res.body).toEqual({ companies: [testCompany] });
+  });
 });

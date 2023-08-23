@@ -18,13 +18,18 @@ router.get("/:code", async (req, res, next) => {
   try {
     const { code } = req.params;
     const results = await db.query(`SELECT code, name, description FROM companies WHERE code=$1`, [code]);
-    const invoices = await db.query(`SELECT * FROM invoices WHERE comp_code=$1`, [code]);
-    if (!invoices.rows) {
-      throw new ExpressError("Company cannot be found", 404);
+
+    if (results.rows.length === 0) {
+      throw new ExpressError("404 not found, no code found", 404);
     } else {
-      results.rows[0]["invoices"] = invoices.rows;
+      const invoices = await db.query(`SELECT * FROM invoices WHERE comp_code=$1`, [code]);
+      if (!invoices.rows) {
+        throw new ExpressError("Invoices cannot be found", 404);
+      } else {
+        results.rows[0]["invoices"] = invoices.rows;
+      }
+      return res.status(200).json({ companies: results.rows[0] });
     }
-    return res.status(200).json({ company: results.rows[0] });
   } catch (e) {
     return next(e);
   }
@@ -59,8 +64,13 @@ router.patch("/:code", async (req, res, next) => {
 // DELETE companies / [code] - DONE
 router.delete("/:code", async (req, res, next) => {
   try {
-    const results = db.query(`DELETE FROM companies WHERE code =$1`, [req.params.code]);
-    return res.send({ status: "deleted" });
+    const { code } = req.params;
+    if (!code) {
+      throw new ExpressError(`Not found`, 404);
+    } else {
+      const results = db.query(`DELETE FROM companies WHERE code =$1`, [code]);
+      return res.send({ status: "deleted" });
+    }
   } catch (e) {
     next(e);
   }

@@ -133,7 +133,7 @@ router.delete("/:id", async (req, res, next) => {
 
 module.exports = router;
 
-// TODO Discussion: Had some trouble with the further study,specifically the invoices PUT route. I did not think to create all that logic inside the route callback.
+// TODO Discussion: Had some trouble with the further study,specifically the invoices PUT route. Had a hard time thinking of the logic to update paid_date, made sense as reading it to make a query to db, look at the data you get back, apply the logic to it then update the database with the result you want based on the logic.
 // ?START  First attempt GET invoices/:id
 //  router.get("/:id", async (req, res, next) => {
 //   try {

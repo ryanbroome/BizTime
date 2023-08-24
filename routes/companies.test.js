@@ -51,9 +51,9 @@ describe("GET companies", () => {
 
 describe("POST /companies", () => {
   test("create a single company", async () => {
-    const res = await request(app).post("/companies").send({ code: "comp", name: "company", description: "a company" });
+    const res = await request(app).post("/companies").send({ code: "company", name: "company", description: "a company" });
     expect(res.statusCode).toEqual(201);
-    expect(res.body).toEqual({ code: "comp", name: "company", description: "a company" });
+    expect(res.body).toEqual({ code: "company", name: "company", description: "a company" });
   });
 });
 
@@ -65,7 +65,7 @@ describe("PATCH /companies/test", () => {
       companies: { code: testCompany.code, name: "company", description: "a company that does more than test it also patches" },
     });
   });
-  test("update a single company", async () => {
+  test("responds with 404 for invalid company code", async () => {
     const res = await request(app).patch(`/companies/0`).send({ name: "company", description: "a company that does more than test it also patches" });
     expect(res.statusCode).toEqual(404);
   });
